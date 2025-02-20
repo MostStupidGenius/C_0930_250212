@@ -2,10 +2,10 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include <string.h>
 
+// 파라미터로 주어지는 문자열은 const로 주어집니다. 변경하려면 문자열을 복사해서 사용하세요.
 int solution(const char* my_string) {
-    int answer = 0;
+	int answer = 0;
 	// 함수 안에서 처리하기 위해 만든 임시 문자배열 변수
 	char text[100] = "";
 	// 임시 변수에 문자열 값을 복사
@@ -14,29 +14,28 @@ int solution(const char* my_string) {
 	int length = strlen(text);
 
 	// 피연산할 숫자들을 담을 문자배열 변수
-	char before[5] = "", after[5]="";
+	char before[100] = "", after[100] = "";
 	// 피연산할 숫자를 담을 변수
 	int beforeNum = 0, afterNum = 0;
 	int flag = 0; // 연산자를 만났는지 여부를 확인
 
-	for (int i = 0; i < length; i++){
+	for (int i = 0; i < length; i++) {
 		char c = text[i];
+		printf("%d c: %c\n", i, c);
 		switch (c) {
 		case '+':
-
 			flag = 1;
 			break;
 		case '-':
 			flag = -1;
 			break;
 		case ' ':
+			// flag의 값이 변경된 적이 없다면
+			// 첫번째 피연산자로 간주
 			if (flag == 0) {
 				before[strlen(before)] = '\0';
-				beforeNum = (int)before;
-			}
-			else {
-				after[strlen(after)] = '\0';
-				afterNum = (int)after;
+				// 앞의 문자열을 숫자로 변경
+				beforeNum = atoi(before);
 			}
 			break;
 		default: // 연산자가 아닌 경우
@@ -50,14 +49,23 @@ int solution(const char* my_string) {
 			}
 		}
 	}
-	
-	printf("%d\n", length);
-	printf("result: %d\n", beforeNum + (flag * afterNum));
+	// 모든 문자열을 순회하고 나서
+	// 두번째 피연산자의 값을 숫자형으로 변경
+	after[strlen(after)] = '\0';
+	afterNum = atoi(after);
 
-    return answer;
+	answer = beforeNum + (flag * afterNum);
+	return answer;
 }
 
 int main() {
 	int result = solution("3 + 7");
+	printf("%d\n", result);
+	result = solution("13 - 7");
+	printf("%d\n", result);
+	result = solution("31 - 52");
+	printf("%d\n", result);
+
+	result = solution("31123123 - 31000000");
 	printf("%d\n", result);
 }
